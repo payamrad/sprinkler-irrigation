@@ -1,0 +1,32 @@
+version: '3.7'
+
+services:
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: payam
+      POSTGRES_PASSWORD: Password123
+      POSTGRES_DB: si
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  
+  web:
+    build: project
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./project:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+  
+volumes:
+  db_data:
