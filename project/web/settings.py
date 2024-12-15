@@ -124,3 +124,22 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Celery
+
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+
+CELERY_TASK_QUEUES = {
+    'schedule_queue': {
+        'exchange': 'schedule_queue',
+        'routing_key': 'schedule_queue'
+    },
+    'default_queue': {
+        'exchange': 'default_queue',
+        'routing_key': 'default_queue'
+    }
+}
+
+CELERY_DEFAULT_QUEUE = 'default_queue'

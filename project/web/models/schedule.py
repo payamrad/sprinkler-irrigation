@@ -25,3 +25,7 @@ class Schedule(models.Model):
     day_of_week = models.IntegerField(choices=DAYS_OF_WEEK_CHOICES)
     time = models.TimeField(validators=[validate_time])
     duration = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
+    is_active = models.BooleanField()
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+    deleted_on = models.DateTimeField(null=True)
