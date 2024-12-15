@@ -29,18 +29,18 @@ services:
       - db
       - redis
   
-  schedule_worker:
+  worker:
     build: project
-    command: celery -A web worker -Q schedule_queue --concurrency=1
+    command: celery -A web worker --concurrency=1
     volumes:
       - ./project:/code
     depends_on:
       - db
       - redis
 
-  worker:
+  beat:
     build: project
-    command: celery -A web worker -Q default_queue --concurrency=4
+    command: celery -A web beat
     volumes:
       - ./project:/code
     depends_on:
