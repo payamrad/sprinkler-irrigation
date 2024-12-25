@@ -1,15 +1,18 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.core.exceptions import ValidationError
-from zone import Zone
+from web.models.zone import Zone
+from datetime import datetime
+
+MINUTE_STEP = 15
 
 def validate_time(value):
-    if value.minute % 15 != 0:
+    if value.minute % MINUTE_STEP != 0:
         raise ValidationError(
             'Invalid time',
             params={'value':value}
         )
-
+    
 class Schedule(models.Model):
     DAYS_OF_WEEK_CHOICES = [
         (0,'Monday'),
@@ -21,11 +24,17 @@ class Schedule(models.Model):
         (6,'Sunday')
     ]
 
-    zone_id = models.ForeignKey(Zone, on_delete=models.CASCADE)
+    zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
     day_of_week = models.IntegerField(choices=DAYS_OF_WEEK_CHOICES)
     time = models.TimeField(validators=[validate_time])
     duration = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
-    is_active = models.BooleanField()
+    is_active = models.BooleanField(default=True)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     deleted_on = models.DateTimeField(null=True)
+
+    @staticmethod
+    def get_schedules_to_run():
+        return Schedule.objects.select_related('zone') \
+                    .filter(is_active=True, zone__is_active=True, deleted_on__isnull=True, day_of_week=datetime.today().weekday(), time__minute=datetime.today().minute)
+                            

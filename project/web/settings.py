@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'web'
 ]
 
 MIDDLEWARE = [
@@ -75,10 +76,10 @@ WSGI_APPLICATION = 'web.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'si',
-        'USER': 'payam',
-        'PASSWORD': 'Password123',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
         'HOST': 'db',
         'PORT': '5432'
     }
@@ -125,8 +126,47 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Cache settings
 
-# Celery
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://redis:6379"
+    }
+}
 
+# Logging settings
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler"
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    }
+}
+
+# Celery settings
+# Basic settings for Celery to work with Redis as the broker and result backend
 CELERY_BROKER_URL = 'redis://redis:6379/0'
 CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'America/Los_Angeles'
+# Route settings to separate Schedule runs and other tasks
+CELERY_TASK_ROUTES = {
+    'web.tasks.run_zone': {'queue': 'zones'}
+}
+# Schedule beat to queue the tasks on intervals
+CELERY_BEAT_SCHEDULE = {
+    'run-schedules-every-minute': {
+        'task': 'web.tasks.run_schedules',
+        'schedule': 60.0
+    }
+}

@@ -21,7 +21,7 @@ createsuperuser: ## Create the root Django superuser with username=root password
 	    run \
 	    -e DJANGO_SUPERUSER_PASSWORD=root \
 	    -e DJANGO_SUPERUSER_USERNAME=root \
-	    -e DJANGO_SUPERUSER_EMAIL=root@casestudy.com \
+	    -e DJANGO_SUPERUSER_EMAIL=root@email.com \
 	    web \
 	    python manage.py createsuperuser --noinput
 
