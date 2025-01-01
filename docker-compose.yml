@@ -20,6 +20,7 @@ services:
   
   web:
     build: project
+    # command: gunicorn --bind 0.0.0.0:8000 web.wsgi:application
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./project:/code

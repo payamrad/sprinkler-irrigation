@@ -20,8 +20,7 @@ class RelayArray():
         self.pins = pin_numbers
         GPIO.setmode(mode)
         for pin in self.pins:
-            GPIO.setup(pin, GPIO.output)
-        GPIO.cleanup()
+            GPIO.setup(pin, GPIO.OUT)
 
     def _validate_pin(self, pin_number):
         if pin_number not in self.pins:
@@ -35,32 +34,35 @@ class RelayArray():
         self._validate_pin(pin_number)
         GPIO.output(pin_number, State.OFF.value)
 
+    def clear(self):
+        GPIO.cleanup()
+
     def get_pins_state(self):
         return {pin:State(GPIO.input(pin)).name for pin in self.pins}
 
 
 class ZonalRelayArray(RelayArray):
-    # Relay to control zones with cache update
+    # Relay to control zones with caching
     def __init__(self, zones:QuerySet):
         self.zones = zones
-        cache.set_zones(self.get_zones_state()) # Initialize
         super().__init__([zone.gpio_pin for zone in zones])
+        cache.set_zones(self.get_zones_state()) # Initialize
 
     def get_zones_state(self):
         # Get all zones state
         pins_state = self.get_pins_state()
         return {zone.id: pins_state[zone.gpio_pin] for zone in self.zones}
 
-    def activate_zone(self, zone_id):
+    def activate_zone(self, zone_id, task_id=None):
         # Only one zone at a time can be set to ON
-        for z_id, z_state in self.get_zones_state():
+        for z_id, z_state in self.get_zones_state().items():
             if z_id != zone_id and z_state == State.ON.name:
                 raise MultipleZonesActiveError(f'Zone {z_id} is already active')
         zone = self.zones.get(id=zone_id)
         self.on(zone.gpio_pin)
-        cache.set_zone(zone_id, State.ON.name)
+        cache.set_zone(zone_id, (State.ON.name, task_id))
 
     def deactivate_zone(self, zone_id):
         zone = self.zones.get(id=zone_id)
         self.off(zone.gpio_pin)
-        cache.set_zone(zone_id, State.OFF.name)
+        cache.set_zone(zone_id, (State.OFF.name, None))

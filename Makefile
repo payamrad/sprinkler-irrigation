@@ -2,7 +2,7 @@
 .PHONY: help dev
 
 up: ## Run all the services, web (Django), Celery, Postgres, Redis
-	docker-compose up
+	docker-compose up --build
 
 sh: ## Open a shell with all dependencies
 	docker-compose run web sh

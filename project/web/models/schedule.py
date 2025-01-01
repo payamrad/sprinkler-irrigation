@@ -31,10 +31,14 @@ class Schedule(models.Model):
     is_active = models.BooleanField(default=True)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
-    deleted_on = models.DateTimeField(null=True)
+    deleted_on = models.DateTimeField(default= None, blank=True, null=True)
+
+    def __str__(self, weekdays = DAYS_OF_WEEK_CHOICES):
+        _, weekday = weekdays[self.day_of_week]
+        return ' '.join(['id:', str(self.id), ', zone:', self.zone.name, ', schduled on', weekday, str(self.time), ' for', str(self.duration), 'minutes'])
 
     @staticmethod
     def get_schedules_to_run():
         return Schedule.objects.select_related('zone') \
                     .filter(is_active=True, zone__is_active=True, deleted_on__isnull=True, day_of_week=datetime.today().weekday(), time__minute=datetime.today().minute)
-                            
+    

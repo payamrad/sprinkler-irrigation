@@ -11,4 +11,4 @@ COPY . .
 RUN apt-get update && apt-get install -y postgresql-client
 
 
-CMD ["python","manage.py","runserver","0.0.0.0:8000"]
+CMD ["gunicorn", "--workers", "2", "--bind", "0.0.0.0:8000", "web.wsgi:application"]

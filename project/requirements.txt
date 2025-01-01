@@ -3,3 +3,4 @@ psycopg2-binary
 celery[redis]
 rpi_lgpio
 django-bootstrap5
+gunicorn

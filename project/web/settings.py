@@ -109,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Los_Angeles'
 
 USE_I18N = True
 
@@ -161,7 +161,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'America/Los_Angeles'
 # Route settings to separate Schedule runs and other tasks
 CELERY_TASK_ROUTES = {
-    'web.tasks.run_zone': {'queue': 'zones'}
+    'web.tasks.activate_zone': {'queue': 'zones'}
 }
 # Schedule beat to queue the tasks on intervals
 CELERY_BEAT_SCHEDULE = {
