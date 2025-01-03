@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from web.models.zone import Zone
 from datetime import datetime
 
-MINUTE_STEP = 15
+MINUTE_STEP = 5
 
 def validate_time(value):
     if value.minute % MINUTE_STEP != 0:
@@ -39,6 +39,7 @@ class Schedule(models.Model):
 
     @staticmethod
     def get_schedules_to_run():
+        now = datetime.today()
         return Schedule.objects.select_related('zone') \
-                    .filter(is_active=True, zone__is_active=True, deleted_on__isnull=True, day_of_week=datetime.today().weekday(), time__minute=datetime.today().minute)
+                    .filter(is_active=True, zone__is_active=True, deleted_on__isnull=True, day_of_week=now.weekday(), time__hour=now.hour, time__minute=now.minute)
     
