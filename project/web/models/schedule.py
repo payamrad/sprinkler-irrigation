@@ -14,6 +14,9 @@ def validate_time(value):
         )
     
 class Schedule(models.Model):
+    """
+    A schedule is a time and duration when a zone should be activated
+    """
     DAYS_OF_WEEK_CHOICES = [
         (0,'Monday'),
         (1,'Tuesday'),

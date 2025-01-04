@@ -15,7 +15,9 @@ class MultipleZonesActiveError(Exception):
     pass
 
 class RelayArray():
-    # Base Relay Array. Control a relay array through GPIO pins.
+    """
+    Base Relay Array class to control a relay array through GPIO pins.
+    """
     def __init__(self, pin_numbers=[], mode=GPIO.BOARD):
         self.pins = pin_numbers
         GPIO.setmode(mode)
@@ -42,16 +44,24 @@ class RelayArray():
 
 
 class ZonalRelayArray(RelayArray):
-    # Relay to control zones with caching
+    """
+    Relay array class to control zones with caching
+    """
     def __init__(self, zones:QuerySet):
         self.zones = zones
         super().__init__([zone.gpio_pin for zone in zones])
-        cache.set_zones(self.get_zones_state()) # Initialize
+        self.get_zones_state() # Initialize cache
 
-    def get_zones_state(self):
+    def get_zones_state(self, no_cache=False):
         # Get all zones state
+        if not no_cache and cache.get_zones() is not None:
+            return cache.get_zones()
+        
+        # Read from GPIO pins
         pins_state = self.get_pins_state()
-        return {zone.id: pins_state[zone.gpio_pin] for zone in self.zones}
+        zones_state = {zone.id: pins_state[zone.gpio_pin] for zone in self.zones}
+        cache.set_zones(zones_state)
+        return zones_state
 
     def activate_zone(self, zone_id, task_id=None):
         # Only one zone at a time can be set to ON

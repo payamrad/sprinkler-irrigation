@@ -1,6 +1,9 @@
 from django.db import models
 
 class Zone(models.Model):
+    """
+    A zone is a physical area that can be controlled by a relay
+    """
     number = models.IntegerField(null=True)
     name = models.TextField(null=True)
     gpio_pin = models.IntegerField(unique=True)
