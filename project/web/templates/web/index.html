@@ -1,0 +1,25 @@
+{% extends './base.html' %}
+{% block title %}Sprinkler Irrigation Home{% endblock %}
+{% block content %}
+<div class="container">
+    <div>
+        <h1 class="text-center mt-5">Welcome to the Sprinkler Irrigation Project</h1>
+    </div>
+    <div class="container text-center">
+        <div class="row">
+            {% for zone in zones %}
+            <div class="col-md-4 col-sm-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>{{ zone.name }}</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>{{ zone.number }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
