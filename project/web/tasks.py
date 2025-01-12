@@ -7,6 +7,7 @@ import time
 import logging
 
 LOG = logging.getLogger(__name__)
+SECONDS_IN_MINUTE = 60
 
 @shared_task(bind=True)
 def activate_zone(self, zone_id, duration):
@@ -21,7 +22,7 @@ def activate_zone(self, zone_id, duration):
         LOG.exception('Multiple zones are active. Aborting')
         return
     # Blocking the task and the queue
-    time.sleep(duration * 60)
+    time.sleep(duration * SECONDS_IN_MINUTE)
     
     relay.deactivate_zone(zone_id)
     LOG.info(f'Zone {str(zone)} has finished running')

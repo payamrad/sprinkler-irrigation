@@ -10,12 +10,27 @@
         <div class="row">
             {% for zone in zones %}
             <div class="col-md-4 col-sm-6">
-                <div class="card">
+                {% if not zone.is_active %}
+                <div class="card text-bg-secondary">
+                {% elif zones_state|get_item:zone.id == "ON" %}
+                <div class="card text-bg-success">
+                {% else %}
+                <div class="card text-bg-light">
+                {% endif %}
                     <div class="card-header">
                         <h2>Zone {{ zone.number }} {{ zone.name }}</h2>
                     </div>
                     <div class="card-body">
-                        Status: {{ zones_state|get_item:zone.id }}
+                        <div class = "container>">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p>Status: {{ zones_state|get_item:zone.id }}</p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p>Temperature: 100°C</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
