@@ -17,8 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from web.views.homepage import HomePageView
+from web.views.zone import ZoneCreateView, ZoneUpdateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', HomePageView.as_view(), name='index')
+    path('', HomePageView.as_view(), name='homepage'),
+    path('zone', ZoneCreateView.as_view(), name='add-zone'),
+    path('zone/<int:id>', ZoneUpdateView.as_view(), name='edit-zone')
 ]

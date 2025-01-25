@@ -21,3 +21,7 @@ def set_zone(zone_id, state, task_id=None):
 def get_zones():
     # Return zone state dictionary from cache
     return cache.get(ZONE_STATE_CACHE_KEY)
+
+def invalidate():
+    # Invalidate the cache
+    cache.delete(ZONE_STATE_CACHE_KEY)

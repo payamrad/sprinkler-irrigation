@@ -1,0 +1,37 @@
+{% extends './base.html' %}
+{% block title %}Zone Information{% endblock %}
+{% block content %}
+
+<div class="container">
+    {% if zone.id %}
+    <h1>Edit Zone</h1>
+    {% else %}
+    <h1>Add Zone</h1>
+    {% endif %}
+    <form method="post">
+        <div class="form-group">
+            {% csrf_token %}
+            <input type="hidden" id="id" name="id" value="{{ zone.id }}">
+            <label for="name">Zone Name:</label>
+            <input type="text" id="name" class="form-control" name="name" value="{{ zone.name }}" required>
+            <br>
+            <label for="number">Zone Number:</label>
+            <input type="number" id="number" class="form-control" name="number" value="{{ zone.number }}">
+            <br>
+            <label for="gpio_pin">GPIO Pin Number:</label>
+            <input type="number" id="gpio_pin" class="form-control" name="gpio_pin" value="{{ zone.gpio_pin }}" required>
+            <br>
+            {% if zone.id %}
+            <div class="form-check"></div>
+                <input type="checkbox" class="form-check-input" id="is_active" name="is_active" {% if zone.is_active %}checked{% endif %}>
+                <label class="form-check-label" for="is_active">Active</label>
+            </div>
+            {% endif %}
+            <br>
+            <button type="submit" class="btn btn-primary">{% if zone.id %} Edit {% else %} Add {% endif %} Zone</button>
+            <a href="{% url 'homepage' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
